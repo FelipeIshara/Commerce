@@ -97,8 +97,10 @@ def create_listing(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    already_on_watchlist = request.user.profile.watchlist.filter(id=listing_id)
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing,
+        "already_on_watchlist": already_on_watchlist
     })
 
 def watchlist(request):
@@ -107,7 +109,16 @@ def watchlist(request):
         listing_id = int(request.POST["listing_id"])
         listing = Listing.objects.get(pk=listing_id)
         user.profile.watchlist.add(listing)
-        return HttpResponse(listing.interessed_users)
+        return HttpResponseRedirect(reverse("watchlist"))
     return render(request, "auctions/watchlist.html", {
-        "watchlist": request.user.profile.watchlist
+        "watchlist": request.user.profile.watchlist,
+        
     })
+def watchlist_delete(request):
+    if request.method == "POST":
+        user = User.objects.get(pk=request.user.id)
+        listing_id = int(request.POST["listing_id"])
+        listing = Listing.objects.get(pk=listing_id)
+        watchlist_item = request.user.profile.watchlist.get(id=listing_id)
+        user.profile.watchlist.remove(listing)
+        return HttpResponseRedirect(reverse("watchlist"))

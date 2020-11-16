@@ -3,9 +3,15 @@
 {% block body %}
     <h2>Listing</h2>
     {{listing}}
+    {% if not already_on_watchlist %}
     <form action="{% url 'watchlist' %}" method="POST">
         {% csrf_token %}
         <button type="submit" name="listing_id" value="{{listing.id}}">Add to Wacthlist</button>
+    {% else %}
+        <form action="{% url 'watchlist_delete' %}" method="POST">
+        {% csrf_token %}    
+        <button type="submit" name="listing_id" value="{{listing.id}}">Delete from Wacthlist</button>    
+    {% endif %}
     </form>
     
 {% endblock %}
