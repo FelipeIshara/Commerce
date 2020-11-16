@@ -1,0 +1,11 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listing</h2>
+    {{listing}}
+    <form action="{% url 'watchlist' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" name="listing_id" value="{{listing.id}}">Add to Wacthlist</button>
+    </form>
+    
+{% endblock %}

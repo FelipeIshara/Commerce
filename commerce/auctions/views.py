@@ -3,12 +3,17 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from .forms import CreateListingForm
 
-from .models import User
+
+from .models import User, Listing
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = Listing.objects.all()
+    return render(request, "auctions/index.html",{
+        "listings": listings
+    })
 
 
 def login_view(request):
@@ -61,3 +66,48 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+
+def create_listing(request):
+    if request.method == "POST":
+        form = CreateListingForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            starting_price = form.cleaned_data["starting_price"]
+            description = form.cleaned_data["description"]
+            category = form.cleaned_data["category"]
+            url_image = form.cleaned_data["url_image"]
+            
+            inst = Listing(
+                       owner_id= request.user, 
+                       title=title, 
+                       starting_price=starting_price, 
+                       category=category,
+                       url_image = url_image
+                   )
+            inst.save()
+            return HttpResponseRedirect(reverse("listing", args=(inst.pk,)))
+
+
+    form = CreateListingForm()
+    return render(request, "auctions/createlisting.html",{
+        "form": form
+    })
+
+def listing(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing
+    })
+
+def watchlist(request):
+    if request.method == "POST":
+        user = User.objects.get(pk=request.user.id)
+        listing_id = int(request.POST["listing_id"])
+        listing = Listing.objects.get(pk=listing_id)
+        user.profile.watchlist.add(listing)
+        return HttpResponse(listing.interessed_users)
+    return render(request, "auctions/watchlist.html", {
+        "watchlist": request.user.profile.watchlist
+    })
