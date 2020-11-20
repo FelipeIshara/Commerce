@@ -2,16 +2,31 @@
 
 {% block body %}
     <h2>Listing</h2>
-    {{listing}}
+    {{listing.title}}
+    <br>
+    Price: ${{price}}
+    
+    
     {% if not already_on_watchlist %}
     <form action="{% url 'watchlist' %}" method="POST">
         {% csrf_token %}
         <button type="submit" name="listing_id" value="{{listing.id}}">Add to Wacthlist</button>
+    </form>
     {% else %}
         <form action="{% url 'watchlist_delete' %}" method="POST">
-        {% csrf_token %}    
-        <button type="submit" name="listing_id" value="{{listing.id}}">Delete from Wacthlist</button>    
+            {% csrf_token %}    
+            <button type="submit" name="listing_id" value="{{listing.id}}">Delete from Wacthlist</button>    
+        </form>
     {% endif %}
-    </form>
     
+    
+    <br>
+        
+    
+    <form action="{% url 'bid' %}" method=POST>
+        {% csrf_token %} 
+        {{ PlaceBidForm }}
+         <button type="submit" name="listing_id" value="{{listing.id}}">Place Bid</button>
+    </form>
+
 {% endblock %}

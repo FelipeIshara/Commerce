@@ -3,10 +3,12 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .forms import CreateListingForm
+from .forms import CreateListingForm, PlaceBidForm
+from decimal import Decimal
+from django.db.models import Max
 
 
-from .models import User, Listing
+from .models import User, Listing, Bid
 
 
 def index(request):
@@ -79,15 +81,15 @@ def create_listing(request):
             category = form.cleaned_data["category"]
             url_image = form.cleaned_data["url_image"]
             
-            inst = Listing(
-                       owner_id= request.user, 
-                       title=title, 
-                       starting_price=starting_price, 
-                       category=category,
-                       url_image = url_image
-                   )
-            inst.save()
-            return HttpResponseRedirect(reverse("listing", args=(inst.pk,)))
+            instListing = Listing(
+                owner_id= request.user, 
+                title=title, 
+                starting_price=starting_price, 
+                category=category,
+                url_image = url_image
+            )
+            instListing.save()
+            return HttpResponseRedirect(reverse("listing", args=(instListing.pk,)))
 
 
     form = CreateListingForm()
@@ -98,9 +100,18 @@ def create_listing(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     already_on_watchlist = request.user.profile.watchlist.filter(id=listing_id)
+    form = PlaceBidForm()
+    #Query the biggest bid, if there is no bids return null
+    biggest_bid = listing.bids.all().order_by('-bid_value').first()
+    if not biggest_bid:
+        price = listing.starting_price
+    else:
+        price = biggest_bid.bid_value
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "already_on_watchlist": already_on_watchlist
+        "already_on_watchlist": already_on_watchlist,
+        "PlaceBidForm": form,
+        "price": price
     })
 
 def watchlist(request):
@@ -122,3 +133,22 @@ def watchlist_delete(request):
         watchlist_item = request.user.profile.watchlist.get(id=listing_id)
         user.profile.watchlist.remove(listing)
         return HttpResponseRedirect(reverse("watchlist"))
+
+def bid(request):
+    #Convert data to decimal
+    if request.method == "POST":
+        bid = round(Decimal(request.POST["bid_value"].replace(',','.')), 2)
+        listing_id = int(request.POST["listing_id"])
+        listing = Listing.objects.get(pk=listing_id)
+        if bid < listing.starting_price:
+            return HttpResponse("Your bid must be greater than or equal to the starting bid")
+        biggest_bid = listing.bids.all().order_by('-bid_value').first()
+        if bid < biggest_bid.bid_value:
+            return HttpResponse("Your bid must be greater than the last bid")
+        bid_inst = Bid(
+        owner = request.user,
+        listing_id = listing,
+        bid_value = bid
+        )
+        bid_inst.save()
+        return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
