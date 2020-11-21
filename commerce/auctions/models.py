@@ -9,12 +9,13 @@ class User(AbstractUser):
 
 
 class Listing(models.Model):
-    owner_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     title = models.CharField(max_length=64)
     starting_price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=64, blank=True)
     description = models.TextField(blank=True)
     url_image = models.URLField(blank=True)
+    active = models.BooleanField(default=True, blank=False)
 
     def __str__(self):
         return f"{self.title}: has a starting bid of {self.starting_price}"

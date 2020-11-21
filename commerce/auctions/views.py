@@ -82,7 +82,7 @@ def create_listing(request):
             url_image = form.cleaned_data["url_image"]
             
             instListing = Listing(
-                owner_id= request.user, 
+                owner = request.user, 
                 title=title, 
                 starting_price=starting_price, 
                 category=category,
@@ -101,7 +101,7 @@ def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     already_on_watchlist = request.user.profile.watchlist.filter(id=listing_id)
     form = PlaceBidForm()
-    #Query the biggest bid, if there is no bids return null
+    #Query the biggest bid, if there is no bids, the price should be the stating one
     biggest_bid = listing.bids.all().order_by('-bid_value').first()
     if not biggest_bid:
         price = listing.starting_price
@@ -111,7 +111,8 @@ def listing(request, listing_id):
         "listing": listing,
         "already_on_watchlist": already_on_watchlist,
         "PlaceBidForm": form,
-        "price": price
+        "price": price,
+        "LastBidOwner": biggest_bid
     })
 
 def watchlist(request):
@@ -140,15 +141,21 @@ def bid(request):
         bid = round(Decimal(request.POST["bid_value"].replace(',','.')), 2)
         listing_id = int(request.POST["listing_id"])
         listing = Listing.objects.get(pk=listing_id)
+        biggest_bid = listing.bids.all().order_by('-bid_value').first()
         if bid < listing.starting_price:
             return HttpResponse("Your bid must be greater than or equal to the starting bid")
-        biggest_bid = listing.bids.all().order_by('-bid_value').first()
-        if bid < biggest_bid.bid_value:
-            return HttpResponse("Your bid must be greater than the last bid")
-        bid_inst = Bid(
-        owner = request.user,
-        listing_id = listing,
-        bid_value = bid
-        )
+        if biggest_bid:
+            if bid < biggest_bid.bid_value:
+                return HttpResponse("Your bid must be greater than the last bid")
+        bid_inst = Bid(owner = request.user,listing_id = listing, bid_value = bid)
         bid_inst.save()
         return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+
+
+def close_listing(request):
+    if request.method == 'POST':
+        listing_id = int(request.POST['listing_id'])
+        listing = Listing.objects.get(pk = listing_id)
+        listing.active = False
+        listing.save()
+        return HttpResponseRedirect(reverse('listing', args=(listing_id,)))
