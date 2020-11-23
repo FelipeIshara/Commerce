@@ -12,3 +12,9 @@ class CreateListingForm(forms.Form):
 
 class PlaceBidForm(forms.Form):
     bid_value = forms.DecimalField(max_digits=10, decimal_places=2, label="Bid:")
+
+class CommentForm(forms.Form):
+    comment = forms.CharField(label="Comment", widget=forms.Textarea(attrs={
+        "rows": 10,
+        "columns": 100
+    }))

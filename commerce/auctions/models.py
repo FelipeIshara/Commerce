@@ -28,9 +28,9 @@ class Bid(models.Model):
     bid_value = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Comment(models.Model):
-    owner_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
-    listing_id = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
-    comment_text = models.TextField()
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
+    comment = models.TextField(blank=False)
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

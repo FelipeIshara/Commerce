@@ -1,43 +1,70 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>{{listing.title}}</h2>
-{% if listing.active == True %}
-        Price: ${{price}}
-        Status: Open
-        <br>
+<h2>{{listing.title}}</h2>
+<!--Caso estiver Aberta-->    
+    {% if listing.active == True %}
+Price: ${{price}}
+Status: Open
+<br>
         {% if LastBidOwner and LastBidOwner.owner == request.user %}
-            Your bid is the last bid
-        {% endif %}        
-        {% if listing.owner == request.user %} 
-        <form action="{% url 'close' %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" name="listing_id" value="{{listing.id}}">Close</button>
-        </form>
+Your bid is the last bid
         {% endif %}
-    {% if not already_on_watchlist %}
-        <form action="{% url 'watchlist' %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" name="listing_id" value="{{listing.id}}">Add to Wacthlist</button>
-        </form>
+
+            
+        {% if listing.owner == request.user %} 
+<form action="{% url 'close' %}" method="POST">
+{% csrf_token %}
+<button type="submit" name="listing_id" value="{{listing.id}}">Close</button>
+</form>
+        {% endif %}
+
+
+        {% if not already_on_watchlist %}
+<!--Botão de add ou deletar da Watchlist-->   
+<form action="{% url 'watchlist' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" name="listing_id" value="{{listing.id}}">Add to Wacthlist</button>
+</form>
+        {% else %}
+<form action="{% url 'watchlist_delete' %}" method="POST">
+    {% csrf_token %}    
+    <button type="submit" name="listing_id" value="{{listing.id}}">Delete from Wacthlist</button>    
+</form>
+        {% endif %}
+
+
+<!--Form de lances-->    
+<form action="{% url 'bid' %}" method=POST>
+    {% csrf_token %} 
+    {{ PlaceBidForm }}
+    <button type="submit" name="listing_id" value="{{listing.id}}">Place Bid</button>
+</form>
+
+
+<!--Form Comentário-->
+<form action="{% url 'comment' %}" method=POST>
+    {% csrf_token %} 
+    {{ CommentForm }}
+    <button type="submit" name="listing_id" value="{{listing.id}}">Comment</button>
+</form>
+
+
+<H3>Comments</H3>
+    {% for comment in comments %}
+<div>{{comment.owner}}: {{comment.comment}}</div>
+    {% endfor %}
+
+
+
+    <!--Caso estiver Fechada-->
     {% else %}
-        <form action="{% url 'watchlist_delete' %}" method="POST">
-            {% csrf_token %}    
-            <button type="submit" name="listing_id" value="{{listing.id}}">Delete from Wacthlist</button>    
-        </form>
-    {% endif %}    
-    <form action="{% url 'bid' %}" method=POST>
-        {% csrf_token %} 
-        {{ PlaceBidForm }}
-        <button type="submit" name="listing_id" value="{{listing.id}}">Place Bid</button>
-    </form>
-{% else %}
-    Winner Bid: ${{price}}
-    <br>
-    Status: Closed
-    <br>
-    {% if LastBidOwner and LastBidOwner.owner == request.user %}
-        You Are the Winner
-    {% endif %}    
-{% endif %}
+<br>
+Status: Closed
+<br>
+        {% if LastBidOwner and LastBidOwner.owner == request.user %}
+You Are the Winner
+Winner Bid: ${{price}}
+        {% endif %}    
+    {% endif %}
 {% endblock %}

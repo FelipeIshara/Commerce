@@ -3,12 +3,12 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .forms import CreateListingForm, PlaceBidForm
+from .forms import CreateListingForm, PlaceBidForm, CommentForm
 from decimal import Decimal
 from django.db.models import Max
 
 
-from .models import User, Listing, Bid
+from .models import User, Listing, Bid, Comment
 
 
 def index(request):
@@ -100,9 +100,11 @@ def create_listing(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     already_on_watchlist = request.user.profile.watchlist.filter(id=listing_id)
-    form = PlaceBidForm()
+    bidform = PlaceBidForm()
+    commentform = CommentForm()
     #Query the biggest bid, if there is no bids, the price should be the stating one
     biggest_bid = listing.bids.all().order_by('-bid_value').first()
+    comments = listing.comments.all()
     if not biggest_bid:
         price = listing.starting_price
     else:
@@ -110,9 +112,11 @@ def listing(request, listing_id):
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "already_on_watchlist": already_on_watchlist,
-        "PlaceBidForm": form,
+        "PlaceBidForm": bidform,
+        "CommentForm": commentform,
         "price": price,
-        "LastBidOwner": biggest_bid
+        "LastBidOwner": biggest_bid,
+        "comments": comments
     })
 
 def watchlist(request):
@@ -159,3 +163,19 @@ def close_listing(request):
         listing.active = False
         listing.save()
         return HttpResponseRedirect(reverse('listing', args=(listing_id,)))
+
+
+def comment(request):
+    if request.method == "POST":
+        listing_id = int(request.POST['listing_id'])
+        form = CommentForm(request.POST)
+        listing = Listing.objects.get(pk=listing_id)
+        if form.is_valid():
+            comment = form.cleaned_data["comment"]
+            instComment = Comment(
+                owner = request.user, 
+                comment = comment,
+                listing = listing
+            )
+            instComment.save()
+            return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
