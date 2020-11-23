@@ -79,6 +79,8 @@ def create_listing(request):
             starting_price = form.cleaned_data["starting_price"]
             description = form.cleaned_data["description"]
             category = form.cleaned_data["category"]
+            if category == "":
+                category = "Others"
             url_image = form.cleaned_data["url_image"]
             
             instListing = Listing(
@@ -179,3 +181,19 @@ def comment(request):
             )
             instComment.save()
             return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
+
+
+def categories(request):
+    categories = Listing.objects.values_list('category', flat=True).distinct()
+    
+    print(categories)
+    return render(request, "auctions/categories.html", {
+        "categories": categories
+    })
+
+def category(request, category):
+    
+    items = Listing.objects.all().filter(category=category)
+    
+    return HttpResponse(items)
+    
