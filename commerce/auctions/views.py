@@ -6,13 +6,14 @@ from django.urls import reverse
 from .forms import CreateListingForm, PlaceBidForm, CommentForm
 from decimal import Decimal
 from django.db.models import Max
+from django.db.models import Q
 
 
 from .models import User, Listing, Bid, Comment
 
 
 def index(request):
-    listings = Listing.objects.all()
+    listings = Listing.objects.all().filter(active=True)
     return render(request, "auctions/index.html",{
         "listings": listings
     })
@@ -193,7 +194,10 @@ def categories(request):
 
 def category(request, category):
     
-    items = Listing.objects.all().filter(category=category)
+    items = Listing.objects.all().filter(Q(category=category), Q(active=True))
     
-    return HttpResponse(items)
+    return render(request, "auctions/category.html", {
+        "items": items,
+        "category": category
+    })
     

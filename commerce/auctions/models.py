@@ -17,10 +17,6 @@ class Listing(models.Model):
     url_image = models.URLField(blank=True)
     active = models.BooleanField(default=True, blank=False)
 
-    def __str__(self):
-        return f"{self.title}: has a starting bid of {self.starting_price}"
-
-
 
 class Bid(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
