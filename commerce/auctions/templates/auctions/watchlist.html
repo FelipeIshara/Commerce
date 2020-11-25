@@ -2,7 +2,19 @@
 
 {% block body %}
     <h2>WatchList</h2>
+    <div class="index-interface">
     {% for listing in watchlist.all %}
-        {{listing}}
+        <div class="active-listing-item">
+                {% if listing.url_image %}
+                <div class="imagem"> 
+                    <a href="{%url 'listing' listing.id %}"><img width="200px" src="{{ listing.url_image }}"></a>
+                </div>
+                {% endif %}
+                <div class="content">
+                    <div class="title">{{ listing.title}} - ${{ listing.starting_price }}</div> 
+                    <div class="description">{{ listing.description}}</div>
+                </div>
+        </div>
     {% endfor %}
+    </div>
 {% endblock %}

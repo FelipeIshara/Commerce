@@ -2,7 +2,9 @@
 
 {% block body %}
     <h2>Categories</h2>
+    <ul class="categories">
     {% for category in categories %}
         <li><a href="{%url 'category' category%}"> {{ category }}</a></li>
-    {% endfor %}    
+    {% endfor %} 
+    </ul>   
 {% endblock %}

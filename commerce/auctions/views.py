@@ -155,6 +155,7 @@ def bid(request):
             if bid < biggest_bid.bid_value:
                 return HttpResponse("Your bid must be greater than the last bid")
         bid_inst = Bid(owner = request.user,listing_id = listing, bid_value = bid)
+        listing.save(last_bid= bid)
         bid_inst.save()
         return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 

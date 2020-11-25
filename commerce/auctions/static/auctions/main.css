@@ -1,0 +1,92 @@
+:root{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 14pt;
+}
+*{
+    margin: 5px;
+}
+
+h2 {
+    margin-left: 40px;
+}
+/*Index,category-item,watchlist Pages*/
+
+div.index-interface{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.active-listing-item{
+    display: grid;
+    grid-template-columns: 250px auto;
+    margin: 50px;
+    width: 600px;
+    
+}
+div.imagem{
+    width: 200px;
+    max-height: 300px ;
+    transition: transform .8s;
+}
+div.imagem:hover{
+    transform: scale(1.5)
+}
+
+div.content{
+    display: flex;
+    flex-direction: column;
+    
+}
+div.content > div.title {
+    color: black;
+    font-weight: bold;
+    margin-bottom: 20px;
+    
+}
+
+/* Categories */
+
+ul.categories{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 50px;
+    font-size: 18pt;
+    width: 800px;
+}
+
+
+
+ul.categories > li > a {
+    color: rgb(45, 53, 61);
+}
+ul.categories > li > a:hover{
+    font-weight: bolder;
+}
+
+/*Create Listing Form*/
+
+.create-listing-form{
+    display: grid;
+    grid-template-columns: 200px 400px;
+    margin-top: 50px;
+}
+.create-listing-form > input, textarea{
+    margin: 5px 0px 5px 0px;
+    border-radius: 10px;
+    text-align: center;
+    
+}
+.create-listing-form > input:focus, textarea:focus{
+    border: 1px blue solid;
+    
+}
+
+.create-btn-form{
+    justify-self: flex-end;
+    grid-column: 2/3;
+    background-color: royalblue;
+}
+
+

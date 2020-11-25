@@ -2,8 +2,17 @@
 
 {% block body %}
     <h2>Category: {{category}}</h2>
+    <div class="index-interface">
     {% for item in items %}
-        <img  width= 200px src="{{item.url_image}}">   
-        <li><a href="{%url 'listing' item.id %}"> {{ item.title }} </a></li>
-    {% endfor %}    
+    <div class="active-listing-item">
+        <div class="imagem">   
+            <a href="{%url 'listing' item.id %}"><img  width= 200px src="{{item.url_image}}"></a>
+        </div>
+        <div class="content"> 
+            <div class="title"> {{ item.title }} - ${{ item.starting_price }}</div>
+            <div class="description">{{ item.description}}</div>
+        </div>
+    </div>
+        {% endfor %} 
+    </div>   
 {% endblock %}

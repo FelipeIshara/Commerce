@@ -2,19 +2,19 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
+    <div class="index-interface">
     {% for listing in listings %}
-          
-            <div class="active-listing-item">
+        <div class="active-listing-item">
                 {% if listing.url_image %}
-                <img width="200px" src="{{ listing.url_image }}">
+                <div class="imagem"> 
+                    <a href="{%url 'listing' listing.id %}"><img width="200px" src="{{ listing.url_image }}"></a>
+                </div>
                 {% endif %}
-                <a href="{%url 'listing' listing.id %}"> {{ listing.title}}  </a>
-                {{ listing.starting_price}}
-                {{ listing.description}}
-                <br>
-                <br>
-            </div>
-       
+                <div class="content">
+                    <div class="title">{{ listing.title}} - ${{ listing.starting_price }}</div> 
+                    <div class="description">{{ listing.description}}</div>
+                </div>
+        </div>
     {% endfor %}
+    </div>
 {% endblock %}
