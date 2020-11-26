@@ -89,4 +89,67 @@ ul.categories > li > a:hover{
     background-color: royalblue;
 }
 
+/*Listing Page*/
+.listing-flexbox{
+    display: flex;
+    font-size: 18pt;
+    
+}
 
+.listing-image-watchlistbtn{
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.listing-content{
+    display: flex;
+    flex-direction: column;
+    margin-left: 50px;
+       
+}
+
+.bid-box{
+    margin-top: auto;
+}
+
+.bid-form{
+    display: flex;
+    align-items: flex-end;
+}
+
+.bid-form > label {
+    display: none;
+}
+.bid-form > input {
+    text-align: center;
+    border-radius: 10px;
+}
+.bid-btn-box{
+    border-radius: 10px;
+}
+
+.comment-box{
+    margin-top: 50px;
+}
+
+.comment-box-content{
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-form{
+    display: flex;
+    align-items: center;
+}
+
+form.comment-form > label{
+    display: none;
+}
+form.comment-form > textarea{
+    height: 35px;
+}
+form.comment-form > button{
+    border-radius: 10px;
+    margin-left: 5px;
+}

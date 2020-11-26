@@ -102,7 +102,10 @@ def create_listing(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
-    already_on_watchlist = request.user.profile.watchlist.filter(id=listing_id)
+    if request.user.is_anonymous:
+        already_on_watchlist = False
+    else:
+        already_on_watchlist = request.user.profile.watchlist.filter(id=listing_id)
     bidform = PlaceBidForm()
     commentform = CommentForm()
     #Query the biggest bid, if there is no bids, the price should be the stating one
@@ -155,7 +158,7 @@ def bid(request):
             if bid < biggest_bid.bid_value:
                 return HttpResponse("Your bid must be greater than the last bid")
         bid_inst = Bid(owner = request.user,listing_id = listing, bid_value = bid)
-        listing.save(last_bid= bid)
+       
         bid_inst.save()
         return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
