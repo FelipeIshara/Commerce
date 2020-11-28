@@ -7,6 +7,7 @@
     {% if listing.active == True %}
     <div class="listing-image-watchlistbtn">
         <img width=300px class="listing-image" src="{{ listing.url_image }}">
+        {% if not request.user.is_anonymous %}
         {% if not already_on_watchlist %}
         <!--Botão de add ou deletar da Watchlist-->   
         <form action="{% url 'watchlist' %}" method="POST">
@@ -18,6 +19,7 @@
             {% csrf_token %}    
             <button class="btn btn-warning btn-lg" type="submit" name="listing_id" value="{{listing.id}}">Delete from Wacthlist</button>    
         </form>
+        {% endif %}
         {% endif %}
     </div>
     <div class="listing-content">
@@ -34,11 +36,13 @@
 
         <div class="bid-box">
             <div class="lastbid">Last Bid: ${{price}}</div>
+            {% if not request.user.is_anonymous %}
             <form action="{% url 'bid' %}" method=POST class="bid-form">
                 {% csrf_token %} 
                 {{ PlaceBidForm }}
                 <button class="btn btn-success bid-btn-box" type="submit" name="listing_id" value="{{listing.id}}">Place Bid</button>
             </form>
+            {% endif %}
             {% if LastBidOwner and LastBidOwner.owner == request.user %}
             <div class="alert alert-warning alert-dismissible fade show" role="alert">Your bid is the last bid</div>
             {% endif %}
@@ -62,7 +66,7 @@
     
     {% for comment in comments %}
     <div class="comments">
-    <div>{{comment.owner}}: {{comment.comment}}</div>
+    <div><strong>{{comment.owner}}</strong>: {{comment.comment}}</div>
     </div>
     {% endfor %}
     {% if not request.user.is_anonymous %}

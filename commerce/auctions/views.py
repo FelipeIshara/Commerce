@@ -7,6 +7,7 @@ from .forms import CreateListingForm, PlaceBidForm, CommentForm
 from decimal import Decimal
 from django.db.models import Max
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 
 from .models import User, Listing, Bid, Comment
@@ -125,6 +126,7 @@ def listing(request, listing_id):
         "comments": comments
     })
 
+@login_required(login_url="/login")
 def watchlist(request):
     if request.method == "POST":
         user = User.objects.get(pk=request.user.id)
@@ -136,6 +138,8 @@ def watchlist(request):
         "watchlist": request.user.profile.watchlist,
         
     })
+
+@login_required(login_url="/login")    
 def watchlist_delete(request):
     if request.method == "POST":
         user = User.objects.get(pk=request.user.id)
@@ -145,6 +149,7 @@ def watchlist_delete(request):
         user.profile.watchlist.remove(listing)
         return HttpResponseRedirect(reverse("watchlist"))
 
+@login_required(login_url="/login")
 def bid(request):
     #Convert data to decimal
     if request.method == "POST":
@@ -162,7 +167,7 @@ def bid(request):
         bid_inst.save()
         return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
-
+@login_required(login_url="/login")
 def close_listing(request):
     if request.method == 'POST':
         listing_id = int(request.POST['listing_id'])
@@ -171,7 +176,7 @@ def close_listing(request):
         listing.save()
         return HttpResponseRedirect(reverse('listing', args=(listing_id,)))
 
-
+@login_required(login_url="/login")
 def comment(request):
     if request.method == "POST":
         listing_id = int(request.POST['listing_id'])
