@@ -196,8 +196,7 @@ def comment(request):
 
 
 def categories(request):
-    categories = Listing.objects.values_list('category', flat=True).distinct()
-    
+    categories = Listing.objects.filter(active=True).values_list('category', flat=True).distinct()
     print(categories)
     return render(request, "auctions/categories.html", {
         "categories": categories

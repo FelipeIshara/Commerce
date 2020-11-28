@@ -4,9 +4,9 @@
     <h2>Categories</h2>
     <ul class="categories">
     {% for category in categories %}
-        {% if category.objects.all %}
+        
         <li><a href="{%url 'category' category%}"> {{ category }}</a></li>
-        {% endif %}
+        
     {% endfor %} 
     </ul>   
 {% endblock %}
