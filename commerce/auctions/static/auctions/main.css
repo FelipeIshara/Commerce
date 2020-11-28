@@ -43,6 +43,9 @@ div.content > div.title {
     margin-bottom: 20px;
     
 }
+div.content > div.title > a {
+    color: black;
+}
 
 /* Categories */
 
@@ -64,6 +67,8 @@ ul.categories > li > a {
 ul.categories > li > a:hover{
     font-weight: bolder;
 }
+
+
 
 /*Create Listing Form*/
 
@@ -89,7 +94,16 @@ ul.categories > li > a:hover{
     background-color: royalblue;
 }
 
+
+
+
 /*Listing Page*/
+.listing-page-interface{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
 .listing-flexbox{
     display: flex;
     font-size: 18pt;
@@ -116,6 +130,7 @@ ul.categories > li > a:hover{
 .bid-form{
     display: flex;
     align-items: flex-end;
+    flex-wrap: wrap;
 }
 
 .bid-form > label {
@@ -129,10 +144,17 @@ ul.categories > li > a:hover{
     border-radius: 10px;
 }
 
-.comment-box{
-    margin-top: 50px;
-}
 
+/* Comment and Details*/
+.comment-and-details-flex{
+    display: flex;
+    margin-top: 50px;
+    flex-wrap: wrap;
+}
+.comment-and-details-flex > div {
+    padding: 20px;
+}
+/*Comment Box*/
 .comment-box-content{
     display: flex;
     flex-direction: column;
@@ -152,4 +174,8 @@ form.comment-form > textarea{
 form.comment-form > button{
     border-radius: 10px;
     margin-left: 5px;
+}
+/*Details Box*/
+.detail-box{
+    
 }

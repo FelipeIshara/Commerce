@@ -16,6 +16,7 @@ class Listing(models.Model):
     description = models.TextField(blank=True)
     url_image = models.URLField(blank=True)
     active = models.BooleanField(default=True, blank=False)
+    last_bid = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.title} listed by {self.owner}"

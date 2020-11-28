@@ -51,34 +51,39 @@
 
 </div>
 
-       
-
-
-
+    
 <!--Form de lances-->    
 
-
-
-<!--Form Comentário-->
-<div class="comment-box">
-    <H3>Comments</H3>
-    <div class="comment-box-content">
-    
-    {% for comment in comments %}
-    <div class="comments">
-    <div><strong>{{comment.owner}}</strong>: {{comment.comment}}</div>
+<div class="comment-and-details-flex">
+    <!-- Comements-->
+    <div class="comment-box">
+        <H3>Comments</H3>
+        <div class="comment-box-content">
+        
+        {% for comment in comments %}
+        <div class="comments">
+        <div><strong>{{comment.owner}}</strong>: {{comment.comment}}</div>
+        </div>
+        {% endfor %}
+        {% if not request.user.is_anonymous %}
+        <form action="{% url 'comment' %}" method=POST class="comment-form">
+            {% csrf_token %} 
+            {{ CommentForm }}
+            <button class="btn btn-secondary bid-btn-box" type="submit" name="listing_id" value="{{listing.id}}">Comment</button>  
+        </form>
+        {% endif %}
+        </div>  
     </div>
-    {% endfor %}
-    {% if not request.user.is_anonymous %}
-    <form action="{% url 'comment' %}" method=POST class="comment-form">
-        {% csrf_token %} 
-        {{ CommentForm }}
-        <button class="btn btn-secondary bid-btn-box" type="submit" name="listing_id" value="{{listing.id}}">Comment</button>  
-    </form>
-    {% endif %}
-    </div>  
-</div>
+     <!-- Details -->
+     <div class="detail-box">
+         <h3>Details</h3>
+         <div class="detail-box-content">
+            <div><strong>Listed by:</strong> {{listing.owner }}</div>
+            <div><strong>Category:</strong> {{listing.category }}</div>
+         </div>
+     </div>
 
+</div>
 
     <!--Caso estiver Fechada-->
     {% else %}

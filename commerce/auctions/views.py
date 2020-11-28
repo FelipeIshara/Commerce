@@ -90,7 +90,8 @@ def create_listing(request):
                 title=title, 
                 starting_price=starting_price, 
                 category=category,
-                url_image = url_image
+                url_image = url_image,
+                last_bid=starting_price
             )
             instListing.save()
             return HttpResponseRedirect(reverse("listing", args=(instListing.pk,)))
@@ -163,7 +164,8 @@ def bid(request):
             if bid < biggest_bid.bid_value:
                 return HttpResponse("Your bid must be greater than the last bid")
         bid_inst = Bid(owner = request.user,listing_id = listing, bid_value = bid)
-       
+        listing.last_bid = bid
+        listing.save()       
         bid_inst.save()
         return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 
