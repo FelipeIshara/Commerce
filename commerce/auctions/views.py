@@ -92,8 +92,7 @@ def create_listing(request):
                 starting_price=starting_price, 
                 description=description,
                 category=category,
-                url_image = url_image,
-                last_bid=starting_price
+                url_image = url_image
             )
             instListing.save()
             return HttpResponseRedirect(reverse("listing", args=(instListing.pk,)))

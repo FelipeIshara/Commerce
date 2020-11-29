@@ -47,6 +47,9 @@
                 <button class="btn btn-success bid-btn-box" type="submit" name="listing_id" value="{{listing.id}}">Place Bid</button>
             </form>
             {% endif %}
+            {% if message %}
+            <div>{{ message }}</div>
+            {% endif%}
             {% if LastBidOwner and LastBidOwner.owner == request.user %}
             <div class="alert alert-warning alert-dismissible fade show" role="alert">Your bid is the last bid</div>
             {% endif %}
