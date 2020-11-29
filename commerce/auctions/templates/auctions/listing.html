@@ -30,12 +30,16 @@
         </form>
         {% endif %}
         <div class="description">
-            Description: <BR>
+            
             {{listing.description}}
         </div>
 
         <div class="bid-box">
-            <div class="lastbid">Last Bid: ${{price}}</div>
+            {% if listing.bids.all %}
+            <div class="lastbid">Last Bid: ${{ listing.bids.all.last.bid_value }}</div>
+            {% else %}
+            <div>The starting bid is: ${{listing.starting_price}}</div>
+            {% endif %}
             {% if not request.user.is_anonymous %}
             <form action="{% url 'bid' %}" method=POST class="bid-form">
                 {% csrf_token %} 
@@ -88,12 +92,20 @@
 
     <!--Caso estiver Fechada-->
     {% else %}
+<div class="close-listing">
+<div>Status: Closed</div>
+<img width=300px class="listing-image" src="{{ listing.url_image }}">
 <br>
-Status: Closed
+{% if LastBidOwner and LastBidOwner.owner == request.user %}
 <br>
-        {% if LastBidOwner and LastBidOwner.owner == request.user %}
-You Are the Winner
-Winner Bid: ${{price}}
-        {% endif %}    
-    {% endif %}
+<div class="alert alert-warning alert-dismissible fade show">You Win !!!! Bid: ${{price}} </div>
+{% else %}
+{% if LastBidOwner.owner %}
+<div>Winner Bid: ${{price}} by {{LastBidOwner.owner}}</div>
+{% else %}
+<div>there were no bids</div>
+{% endif %}
+</div>    
+{% endif %}
+{% endif %}
 {% endblock %}

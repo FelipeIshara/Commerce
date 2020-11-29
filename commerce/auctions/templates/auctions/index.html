@@ -11,7 +11,11 @@
                 </div>
                 {% endif %}
                 <div class="content">
-                    <div class="title"><a href="{%url 'listing' listing.id %}">{{ listing.title}}</a> - ${{ listing.last_bid }}</div> 
+                    {% if listing.bids.all %}
+                    <div class="title"><a href="{%url 'listing' listing.id %}">{{ listing.title}}</a> - ${{ listing.bids.all.last.bid_value }}</div> 
+                    {% else %}
+                    <div class="title"><a href="{%url 'listing' listing.id %}">{{ listing.title}}</a> - ${{ listing.starting_price }}</div>
+                    {% endif %}
                     <div class="description">{{ listing.description}}</div>
                 </div>
         </div>

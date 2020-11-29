@@ -15,6 +15,7 @@ from .models import User, Listing, Bid, Comment
 
 def index(request):
     listings = Listing.objects.all().filter(active=True)
+    
     return render(request, "auctions/index.html",{
         "listings": listings
     })
@@ -89,6 +90,7 @@ def create_listing(request):
                 owner = request.user, 
                 title=title, 
                 starting_price=starting_price, 
+                description=description,
                 category=category,
                 url_image = url_image,
                 last_bid=starting_price
@@ -158,14 +160,15 @@ def bid(request):
         listing_id = int(request.POST["listing_id"])
         listing = Listing.objects.get(pk=listing_id)
         biggest_bid = listing.bids.all().order_by('-bid_value').first()
+        print(biggest_bid)
+        biggest_bid2 = listing.bids.all().last()
+        print(biggest_bid2)
         if bid < listing.starting_price:
             return HttpResponse("Your bid must be greater than or equal to the starting bid")
         if biggest_bid:
-            if bid < biggest_bid.bid_value:
+            if bid <= biggest_bid.bid_value:
                 return HttpResponse("Your bid must be greater than the last bid")
-        bid_inst = Bid(owner = request.user,listing_id = listing, bid_value = bid)
-        listing.last_bid = bid
-        listing.save()       
+        bid_inst = Bid(owner = request.user,listing_id = listing, bid_value = bid)  
         bid_inst.save()
         return HttpResponseRedirect(reverse("listing", args=(listing_id,)))
 

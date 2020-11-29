@@ -16,7 +16,6 @@ class Listing(models.Model):
     description = models.TextField(blank=True)
     url_image = models.URLField(blank=True)
     active = models.BooleanField(default=True, blank=False)
-    last_bid = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.title} listed by {self.owner}"
@@ -27,11 +26,16 @@ class Bid(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
     listing_id = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids" )
     bid_value = models.DecimalField(max_digits=10, decimal_places=2)
+    def __str__(self):
+        return f"Bid made by {self.owner} in the listing: {self.listing_id}"
+
 
 class Comment(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
     comment = models.TextField(blank=False)
+    def __str__(self):
+        return f"Comment posted by {self.owner} in the listing: {self.listing_id}"
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
